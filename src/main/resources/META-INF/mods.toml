@@ -1,0 +1,27 @@
+modLoader = "javafml"
+loaderVersion = "[36,)"
+issueTrackerURL = "https://github.com/LatvianModder/Recycler/issues"
+license = "All Rights Reserved"
+
+[[mods]]
+modId = "recycler"
+version = "${version}"
+displayName = "Item Recycler"
+authors = "LatvianModder"
+description = '''
+Adds a simple recycler block that lets you recycle items into their components
+'''
+
+[[dependencies.recycler]]
+modId = "forge"
+mandatory = true
+versionRange = "[36,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.recycler]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.16.5,)"
+ordering = "NONE"
+side = "BOTH"
