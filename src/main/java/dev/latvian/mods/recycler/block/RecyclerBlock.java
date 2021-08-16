@@ -72,7 +72,7 @@ public class RecyclerBlock extends Block implements SimpleWaterloggedBlock {
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
+	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
 		return state.getValue(BlockStateProperties.HORIZONTAL_FACING).getAxis() == Direction.Axis.Z ? SHAPE_X : SHAPE_Z;
 	}
 
@@ -89,14 +89,14 @@ public class RecyclerBlock extends Block implements SimpleWaterloggedBlock {
 
 	@Override
 	@Deprecated
-	public BlockState rotate(BlockState arg, Rotation arg2) {
-		return arg.setValue(BlockStateProperties.HORIZONTAL_FACING, arg2.rotate(arg.getValue(BlockStateProperties.HORIZONTAL_FACING)));
+	public BlockState rotate(BlockState state, Rotation rotation) {
+		return state.setValue(BlockStateProperties.HORIZONTAL_FACING, rotation.rotate(state.getValue(BlockStateProperties.HORIZONTAL_FACING)));
 	}
 
 	@Override
 	@Deprecated
-	public BlockState mirror(BlockState arg, Mirror arg2) {
-		return arg.rotate(arg2.getRotation(arg.getValue(BlockStateProperties.HORIZONTAL_FACING)));
+	public BlockState mirror(BlockState state, Mirror mirror) {
+		return state.rotate(mirror.getRotation(state.getValue(BlockStateProperties.HORIZONTAL_FACING)));
 	}
 
 	@Override
@@ -147,32 +147,32 @@ public class RecyclerBlock extends Block implements SimpleWaterloggedBlock {
 
 	@Override
 	@Deprecated
-	public BlockState updateShape(BlockState arg, Direction arg2, BlockState arg3, LevelAccessor arg4, BlockPos arg5, BlockPos arg6) {
-		if (arg.getValue(BlockStateProperties.WATERLOGGED)) {
-			arg4.getLiquidTicks().scheduleTick(arg5, Fluids.WATER, Fluids.WATER.getTickDelay(arg4));
+	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+		if (state.getValue(BlockStateProperties.WATERLOGGED)) {
+			level.getLiquidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 		}
 
-		return super.updateShape(arg, arg2, arg3, arg4, arg5, arg6);
+		return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
 	}
 
-	public static void start(Level level, BlockPos pos) {
-		if (!level.getBlockState(pos).getValue(RUNNING)) {
+	public static void start(BlockState state, Level level, BlockPos pos) {
+		if (!state.getValue(RUNNING)) {
 			BlockEntity entity = level.getBlockEntity(pos);
 
 			if (entity instanceof RecyclerEntity) {
 				int nextTime = ((RecyclerEntity) entity).getNextTime();
 
 				if (nextTime > 0) {
-					level.setBlock(pos, RecyclerBlocks.RECYCLER.get().defaultBlockState().setValue(RUNNING, true), Constants.BlockFlags.DEFAULT_AND_RERENDER);
+					level.setBlock(pos, state.setValue(RUNNING, true), Constants.BlockFlags.DEFAULT_AND_RERENDER);
 					level.getBlockTicks().scheduleTick(pos, RecyclerBlocks.RECYCLER.get(), nextTime);
 				}
 			}
 		}
 	}
 
-	public static void stop(Level level, BlockPos pos) {
-		if (level.getBlockState(pos).getValue(RUNNING)) {
-			level.setBlock(pos, RecyclerBlocks.RECYCLER.get().defaultBlockState().setValue(RUNNING, false), Constants.BlockFlags.DEFAULT_AND_RERENDER);
+	public static void stop(BlockState state, Level level, BlockPos pos) {
+		if (state.getValue(RUNNING)) {
+			level.setBlock(pos, state.setValue(RUNNING, false), Constants.BlockFlags.DEFAULT_AND_RERENDER);
 		}
 	}
 
@@ -191,10 +191,10 @@ public class RecyclerBlock extends Block implements SimpleWaterloggedBlock {
 			if (nextTime > 0) {
 				level.getBlockTicks().scheduleTick(pos, RecyclerBlocks.RECYCLER.get(), nextTime);
 			} else {
-				stop(level, pos);
+				stop(state, level, pos);
 			}
 		} else {
-			stop(level, pos);
+			stop(state, level, pos);
 		}
 	}
 

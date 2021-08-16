@@ -74,9 +74,9 @@ public class RecyclerMenu extends AbstractContainerMenu {
 	public boolean clickMenuButton(Player player, int button) {
 		if (button == 0) {
 			if (recycler.getBlockState().getValue(RecyclerBlock.RUNNING)) {
-				RecyclerBlock.stop(player.level, recycler.getBlockPos());
+				RecyclerBlock.stop(recycler.getBlockState(), player.level, recycler.getBlockPos());
 			} else {
-				RecyclerBlock.start(player.level, recycler.getBlockPos());
+				RecyclerBlock.start(recycler.getBlockState(), player.level, recycler.getBlockPos());
 			}
 		}
 
