@@ -17,7 +17,7 @@
 			"tag": "forge:storage_blocks/iron"
 		},
 		"S": {
-			"tag": "forge:rods/wooden"
+			"item": "minecraft:iron_bars"
 		}
 	},
 	"result": {

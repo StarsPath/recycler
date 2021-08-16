@@ -9,6 +9,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 /**
  * @author LatvianModder
  */
+@SuppressWarnings("ALL")
 public class RecyclerBlocks {
 	public static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, Recycler.MOD_ID);
 

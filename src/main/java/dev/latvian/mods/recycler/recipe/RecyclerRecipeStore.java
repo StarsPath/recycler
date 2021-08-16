@@ -2,6 +2,7 @@ package dev.latvian.mods.recycler.recipe;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import org.jetbrains.annotations.Nullable;
@@ -15,6 +16,10 @@ public class RecyclerRecipeStore extends MapItemSavedData {
 
 	@Nullable
 	public static RecyclerRecipe getRecipe(Level level, Item item) {
+		if (item == Items.AIR) {
+			return null;
+		}
+
 		RecyclerRecipeStore store = (RecyclerRecipeStore) level.getMapData(KEY);
 
 		if (store == null) {

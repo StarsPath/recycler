@@ -2,6 +2,7 @@ package dev.latvian.mods.recycler;
 
 import dev.latvian.mods.recycler.block.RecyclerBlocks;
 import dev.latvian.mods.recycler.block.entity.RecyclerBlockEntities;
+import dev.latvian.mods.recycler.gui.RecyclerMenus;
 import dev.latvian.mods.recycler.item.RecyclerItems;
 import dev.latvian.mods.recycler.recipe.RecyclerRecipeSerializers;
 import net.minecraftforge.fml.common.Mod;
@@ -24,5 +25,6 @@ public class Recycler {
 		RecyclerItems.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
 		RecyclerBlockEntities.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
 		RecyclerRecipeSerializers.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
+		RecyclerMenus.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
 	}
 }

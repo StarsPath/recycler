@@ -1,14 +1,18 @@
 package dev.latvian.mods.recycler.block.entity;
 
+import dev.latvian.mods.recycler.recipe.RecyclerRecipe;
+import dev.latvian.mods.recycler.recipe.RecyclerRecipeStore;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.TickableBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
@@ -17,7 +21,7 @@ import javax.annotation.Nullable;
 /**
  * @author LatvianModder
  */
-public class RecyclerEntity extends BlockEntity implements TickableBlockEntity {
+public class RecyclerEntity extends BlockEntity {
 	public final ItemStackHandler input;
 	public final ItemStackHandler output;
 	public final LazyOptional<IItemHandler> inputOptional;
@@ -47,7 +51,7 @@ public class RecyclerEntity extends BlockEntity implements TickableBlockEntity {
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-		return cap == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY ? (side != Direction.DOWN ? inputOptional : outputOptional).cast() : super.getCapability(cap, side);
+		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? (side != Direction.DOWN ? inputOptional : outputOptional).cast() : super.getCapability(cap, side);
 	}
 
 	@Override
@@ -64,7 +68,49 @@ public class RecyclerEntity extends BlockEntity implements TickableBlockEntity {
 		output.deserializeNBT(compound.getCompound("Output"));
 	}
 
-	@Override
-	public void tick() {
+	public int getNextTime() {
+		for (int i = 0; i < input.getSlots(); i++) {
+			RecyclerRecipe recipe = RecyclerRecipeStore.getRecipe(level, input.getStackInSlot(i).getItem());
+
+			if (recipe != null) {
+				return recipe.time;
+			}
+		}
+
+		return 0;
+	}
+
+	public int recycle() {
+		for (int i = 0; i < input.getSlots(); i++) {
+			ItemStack is = input.getStackInSlot(i);
+
+			if (!is.isEmpty()) {
+				RecyclerRecipe recipe = RecyclerRecipeStore.getRecipe(level, is.getItem());
+
+				if (recipe != null) {
+					is.shrink(1);
+
+					if (is.isEmpty()) {
+						input.setStackInSlot(i, ItemStack.EMPTY);
+					}
+
+					boolean all = true;
+
+					for (ItemStack result : recipe.result) {
+						ItemStack r = ItemHandlerHelper.insertItem(output, result.copy(), false);
+
+						if (!r.isEmpty()) {
+							all = false;
+							Block.popResource(level, getBlockPos().above(), r);
+						}
+					}
+
+					setChanged();
+					return all ? getNextTime() : 0;
+				}
+			}
+		}
+
+		return 0;
 	}
 }
