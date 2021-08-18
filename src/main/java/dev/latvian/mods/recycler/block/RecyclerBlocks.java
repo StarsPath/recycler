@@ -9,9 +9,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 /**
  * @author LatvianModder
  */
-@SuppressWarnings("ALL")
 public class RecyclerBlocks {
 	public static final DeferredRegister<Block> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, Recycler.MOD_ID);
 
-	public static final RegistryObject<Block> RECYCLER = REGISTRY.register("recycler", () -> new RecyclerBlock());
+	public static final RegistryObject<Block> RECYCLER = REGISTRY.register("recycler", () -> new RecyclerBlock(false));
+	public static final RegistryObject<Block> ADVANCED_RECYCLER = REGISTRY.register("advanced_recycler", () -> new RecyclerBlock(true));
 }

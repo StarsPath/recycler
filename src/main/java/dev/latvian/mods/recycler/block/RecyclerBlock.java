@@ -50,14 +50,17 @@ public class RecyclerBlock extends Block implements SimpleWaterloggedBlock {
 	public static final VoxelShape SHAPE_X = box(0, 0, 2, 16, 16, 14);
 	public static final VoxelShape SHAPE_Z = box(2, 0, 0, 14, 16, 16);
 	public static final BooleanProperty RUNNING = BooleanProperty.create("running");
+	public final boolean advanced;
 
-	public RecyclerBlock() {
+	public RecyclerBlock(boolean a) {
 		super(Block.Properties.of(Material.METAL).strength(5F, 6F).sound(SoundType.METAL).dynamicShape().noOcclusion());
 		registerDefaultState(stateDefinition.any()
 				.setValue(RUNNING, false)
 				.setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH)
 				.setValue(BlockStateProperties.WATERLOGGED, false)
 		);
+
+		advanced = a;
 	}
 
 	@Override
@@ -68,7 +71,9 @@ public class RecyclerBlock extends Block implements SimpleWaterloggedBlock {
 	@Nullable
 	@Override
 	public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
-		return new RecyclerEntity();
+		RecyclerEntity e = new RecyclerEntity();
+		e.advanced = advanced;
+		return e;
 	}
 
 	@Override
@@ -109,7 +114,7 @@ public class RecyclerBlock extends Block implements SimpleWaterloggedBlock {
 				NetworkHooks.openGui((ServerPlayer) player, new MenuProvider() {
 					@Override
 					public Component getDisplayName() {
-						return new TranslatableComponent("block.recycler.recycler");
+						return new TranslatableComponent(advanced ? "block.recycler.advanced_recycler" : "block.recycler.recycler");
 					}
 
 					@Override
@@ -164,7 +169,7 @@ public class RecyclerBlock extends Block implements SimpleWaterloggedBlock {
 
 				if (nextTime > 0) {
 					level.setBlock(pos, state.setValue(RUNNING, true), Constants.BlockFlags.DEFAULT_AND_RERENDER);
-					level.getBlockTicks().scheduleTick(pos, RecyclerBlocks.RECYCLER.get(), nextTime);
+					level.getBlockTicks().scheduleTick(pos, state.getBlock(), nextTime);
 				}
 			}
 		}
@@ -189,7 +194,7 @@ public class RecyclerBlock extends Block implements SimpleWaterloggedBlock {
 			int nextTime = ((RecyclerEntity) entity).recycle();
 
 			if (nextTime > 0) {
-				level.getBlockTicks().scheduleTick(pos, RecyclerBlocks.RECYCLER.get(), nextTime);
+				level.getBlockTicks().scheduleTick(pos, state.getBlock(), nextTime);
 			} else {
 				stop(state, level, pos);
 			}

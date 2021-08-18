@@ -23,4 +23,5 @@ public class RecyclerItems {
 	}
 
 	public static final RegistryObject<BlockItem> RECYCLER = blockItem("recycler", RecyclerBlocks.RECYCLER);
+	public static final RegistryObject<BlockItem> ADVANCED_RECYCLER = blockItem("advanced_recycler", RecyclerBlocks.ADVANCED_RECYCLER);
 }

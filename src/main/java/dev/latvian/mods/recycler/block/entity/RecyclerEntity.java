@@ -22,6 +22,7 @@ import javax.annotation.Nullable;
  * @author LatvianModder
  */
 public class RecyclerEntity extends BlockEntity {
+	public boolean advanced;
 	public final ItemStackHandler input;
 	public final ItemStackHandler output;
 	public final LazyOptional<IItemHandler> inputOptional;
@@ -51,11 +52,16 @@ public class RecyclerEntity extends BlockEntity {
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+		if (!advanced) {
+			return super.getCapability(cap, side);
+		}
+
 		return cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY ? (side != Direction.DOWN ? inputOptional : outputOptional).cast() : super.getCapability(cap, side);
 	}
 
 	@Override
 	public CompoundTag save(CompoundTag compound) {
+		compound.putBoolean("Advanced", advanced);
 		compound.put("Input", input.serializeNBT());
 		compound.put("Output", output.serializeNBT());
 		return super.save(compound);
@@ -64,6 +70,7 @@ public class RecyclerEntity extends BlockEntity {
 	@Override
 	public void load(BlockState state, CompoundTag compound) {
 		super.load(state, compound);
+		advanced = compound.getBoolean("Advanced");
 		input.deserializeNBT(compound.getCompound("Input"));
 		output.deserializeNBT(compound.getCompound("Output"));
 	}
@@ -77,7 +84,7 @@ public class RecyclerEntity extends BlockEntity {
 			}
 		}
 
-		return 0;
+		return advanced ? 100 : 0;
 	}
 
 	public int recycle() {
@@ -106,11 +113,11 @@ public class RecyclerEntity extends BlockEntity {
 					}
 
 					setChanged();
-					return all ? getNextTime() : 0;
+					return all ? getNextTime() : (advanced ? 100 : 0);
 				}
 			}
 		}
 
-		return 0;
+		return advanced ? 100 : 0;
 	}
 }

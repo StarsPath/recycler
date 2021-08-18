@@ -13,5 +13,5 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class RecyclerBlockEntities {
 	public static final DeferredRegister<BlockEntityType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, Recycler.MOD_ID);
 
-	public static final RegistryObject<BlockEntityType<RecyclerEntity>> RECYCLER = REGISTRY.register("recycler", () -> BlockEntityType.Builder.of(RecyclerEntity::new, RecyclerBlocks.RECYCLER.get()).build(null));
+	public static final RegistryObject<BlockEntityType<RecyclerEntity>> RECYCLER = REGISTRY.register("recycler", () -> BlockEntityType.Builder.of(RecyclerEntity::new, RecyclerBlocks.RECYCLER.get(), RecyclerBlocks.ADVANCED_RECYCLER.get()).build(null));
 }

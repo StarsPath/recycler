@@ -16,11 +16,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class Recycler {
 	public static final String MOD_ID = "recycler";
 
-	public static Recycler instance;
-
 	public Recycler() {
-		instance = this;
-
 		RecyclerBlocks.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
 		RecyclerItems.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
 		RecyclerBlockEntities.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());

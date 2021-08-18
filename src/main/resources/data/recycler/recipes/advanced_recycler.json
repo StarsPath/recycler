@@ -1,0 +1,26 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"group": "recycler",
+	"pattern": [
+		"ICI",
+		"IRI",
+		"S S"
+	],
+	"key": {
+		"I": {
+			"tag": "forge:ingots/gold"
+		},
+		"C": {
+			"item": "minecraft:repeater"
+		},
+		"R": {
+			"item": "recycler:recycler"
+		},
+		"S": {
+			"item": "minecraft:end_rod"
+		}
+	},
+	"result": {
+		"item": "recycler:advanced_recycler"
+	}
+}

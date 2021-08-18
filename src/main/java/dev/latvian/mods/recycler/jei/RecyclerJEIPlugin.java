@@ -35,6 +35,7 @@ public class RecyclerJEIPlugin implements IModPlugin {
 	@Override
 	public void registerRecipeCatalysts(IRecipeCatalystRegistration r) {
 		r.addRecipeCatalyst(new ItemStack(RecyclerItems.RECYCLER.get()), RecyclerCategory.UID);
+		r.addRecipeCatalyst(new ItemStack(RecyclerItems.ADVANCED_RECYCLER.get()), RecyclerCategory.UID);
 	}
 
 	@Override
