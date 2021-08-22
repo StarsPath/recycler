@@ -182,12 +182,12 @@ public class RecyclerBlock extends Block implements SimpleWaterloggedBlock {
 	}
 
 	@Override
+	public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
+	}
+
+	@Override
 	@Deprecated
 	public void tick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
-		if (level.isClientSide()) {
-			return;
-		}
-
 		BlockEntity entity = level.getBlockEntity(pos);
 
 		if (entity instanceof RecyclerEntity) {
