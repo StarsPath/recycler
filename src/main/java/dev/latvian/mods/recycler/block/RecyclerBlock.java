@@ -2,51 +2,46 @@ package dev.latvian.mods.recycler.block;
 
 import dev.latvian.mods.recycler.block.entity.RecyclerEntity;
 import dev.latvian.mods.recycler.gui.RecyclerMenu;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.SimpleWaterloggedBlock;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.IWaterLoggable;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.NetworkHooks;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.Random;
 
 /**
  * @author LatvianModder
  */
-public class RecyclerBlock extends Block implements SimpleWaterloggedBlock {
+public class RecyclerBlock extends Block implements IWaterLoggable {
 	public static final VoxelShape SHAPE_X = box(0, 0, 2, 16, 16, 14);
 	public static final VoxelShape SHAPE_Z = box(2, 0, 0, 14, 16, 16);
 	public static final BooleanProperty RUNNING = BooleanProperty.create("running");
@@ -70,24 +65,24 @@ public class RecyclerBlock extends Block implements SimpleWaterloggedBlock {
 
 	@Nullable
 	@Override
-	public BlockEntity createTileEntity(BlockState state, BlockGetter world) {
+	public TileEntity createTileEntity(BlockState state, IBlockReader world) {
 		RecyclerEntity e = new RecyclerEntity();
 		e.advanced = advanced;
 		return e;
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+	public VoxelShape getShape(BlockState state, IBlockReader level, BlockPos pos, ISelectionContext context) {
 		return state.getValue(BlockStateProperties.HORIZONTAL_FACING).getAxis() == Direction.Axis.Z ? SHAPE_X : SHAPE_Z;
 	}
 
 	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+	protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder) {
 		builder.add(RUNNING, BlockStateProperties.HORIZONTAL_FACING, BlockStateProperties.WATERLOGGED);
 	}
 
 	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext context) {
+	public BlockState getStateForPlacement(BlockItemUseContext context) {
 		FluidState lv = context.getLevel().getFluidState(context.getClickedPos());
 		return defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, context.getHorizontalDirection()).setValue(BlockStateProperties.WATERLOGGED, lv.getType() == Fluids.WATER);
 	}
@@ -106,31 +101,31 @@ public class RecyclerBlock extends Block implements SimpleWaterloggedBlock {
 
 	@Override
 	@Deprecated
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+	public ActionResultType use(BlockState state, World level, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit) {
 		if (!level.isClientSide()) {
-			BlockEntity entity = level.getBlockEntity(pos);
+			TileEntity entity = level.getBlockEntity(pos);
 
 			if (entity instanceof RecyclerEntity) {
-				NetworkHooks.openGui((ServerPlayer) player, new MenuProvider() {
+				NetworkHooks.openGui((ServerPlayerEntity) player, new INamedContainerProvider() {
 					@Override
-					public Component getDisplayName() {
-						return new TranslatableComponent(advanced ? "block.recycler.advanced_recycler" : "block.recycler.recycler");
+					public ITextComponent getDisplayName() {
+						return new TranslationTextComponent(advanced ? "block.recycler.advanced_recycler" : "block.recycler.recycler");
 					}
 
 					@Override
-					public AbstractContainerMenu createMenu(int id, Inventory playerInv, Player player1) {
+					public Container createMenu(int id, PlayerInventory playerInv, PlayerEntity player1) {
 						return new RecyclerMenu(id, playerInv, (RecyclerEntity) entity);
 					}
 				}, pos);
 			}
 		}
 
-		return InteractionResult.SUCCESS;
+		return ActionResultType.SUCCESS;
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void animateTick(BlockState state, Level level, BlockPos p, Random random) {
+	public void animateTick(BlockState state, World level, BlockPos p, Random random) {
 		if (state.getValue(RUNNING)) {
 			for (int i = 0; i < 10; i++) {
 				float r = random.nextFloat() * 0.2F;
@@ -139,7 +134,7 @@ public class RecyclerBlock extends Block implements SimpleWaterloggedBlock {
 				double x = p.getX() + 0.2D + random.nextFloat() * 0.6D;
 				double y = p.getY() + 1D;
 				double z = p.getZ() + 0.2D + random.nextFloat() * 0.6D;
-				level.addParticle(new DustParticleOptions(r, g, b, 1F), x, y, z, 0D, 0D, 0D);
+//				level.addParticle(new DustParticleOptions(r, g, b, 1F), x, y, z, 0D, 0D, 0D);
 			}
 		}
 	}
@@ -152,7 +147,7 @@ public class RecyclerBlock extends Block implements SimpleWaterloggedBlock {
 
 	@Override
 	@Deprecated
-	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+	public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, IWorld level, BlockPos pos, BlockPos neighborPos) {
 		if (state.getValue(BlockStateProperties.WATERLOGGED)) {
 			level.getLiquidTicks().scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
 		}
@@ -160,9 +155,9 @@ public class RecyclerBlock extends Block implements SimpleWaterloggedBlock {
 		return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
 	}
 
-	public static void start(BlockState state, Level level, BlockPos pos) {
+	public static void start(BlockState state, World level, BlockPos pos) {
 		if (!state.getValue(RUNNING)) {
-			BlockEntity entity = level.getBlockEntity(pos);
+			TileEntity entity = level.getBlockEntity(pos);
 
 			if (entity instanceof RecyclerEntity) {
 				int nextTime = ((RecyclerEntity) entity).getNextTime();
@@ -175,20 +170,20 @@ public class RecyclerBlock extends Block implements SimpleWaterloggedBlock {
 		}
 	}
 
-	public static void stop(BlockState state, Level level, BlockPos pos) {
+	public static void stop(BlockState state, World level, BlockPos pos) {
 		if (state.getValue(RUNNING)) {
 			level.setBlock(pos, state.setValue(RUNNING, false), Constants.BlockFlags.DEFAULT_AND_RERENDER);
 		}
 	}
 
 	@Override
-	public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
+	public void randomTick(BlockState state, ServerWorld level, BlockPos pos, Random random) {
 	}
 
 	@Override
 	@Deprecated
-	public void tick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
-		BlockEntity entity = level.getBlockEntity(pos);
+	public void tick(BlockState state, ServerWorld level, BlockPos pos, Random random) {
+		TileEntity entity = level.getBlockEntity(pos);
 
 		if (entity instanceof RecyclerEntity) {
 			int nextTime = ((RecyclerEntity) entity).recycle();
@@ -205,9 +200,9 @@ public class RecyclerBlock extends Block implements SimpleWaterloggedBlock {
 
 	@Override
 	@Deprecated
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean b) {
+	public void onRemove(BlockState state, World level, BlockPos pos, BlockState newState, boolean b) {
 		if (!state.is(newState.getBlock()) && !level.isClientSide()) {
-			BlockEntity entity = level.getBlockEntity(pos);
+			TileEntity entity = level.getBlockEntity(pos);
 
 			if (entity instanceof RecyclerEntity) {
 				RecyclerEntity r = (RecyclerEntity) entity;

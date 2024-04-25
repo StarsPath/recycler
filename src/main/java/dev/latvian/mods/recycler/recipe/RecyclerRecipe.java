@@ -1,12 +1,12 @@
 package dev.latvian.mods.recycler.recipe;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * @author LatvianModder
  */
-public class RecyclerRecipe implements Recipe<NoInventory> {
+public class RecyclerRecipe implements IRecipe<NoInventory> {
 	private final ResourceLocation id;
 	private final String group;
 	public Ingredient ingredient;
@@ -30,7 +30,7 @@ public class RecyclerRecipe implements Recipe<NoInventory> {
 	}
 
 	@Override
-	public boolean matches(NoInventory inv, Level world) {
+	public boolean matches(NoInventory inv, World world) {
 		return true;
 	}
 
@@ -60,12 +60,12 @@ public class RecyclerRecipe implements Recipe<NoInventory> {
 	}
 
 	@Override
-	public RecipeSerializer<?> getSerializer() {
+	public IRecipeSerializer<?> getSerializer() {
 		return RecyclerRecipeSerializers.RECYCLER.get();
 	}
 
 	@Override
-	public RecipeType<?> getType() {
+	public IRecipeType<?> getType() {
 		return RecyclerRecipeSerializers.RECYCLER_TYPE;
 	}
 }

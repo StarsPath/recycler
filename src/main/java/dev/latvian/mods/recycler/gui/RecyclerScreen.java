@@ -1,23 +1,22 @@
 package dev.latvian.mods.recycler.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.latvian.mods.recycler.Recycler;
 import dev.latvian.mods.recycler.block.RecyclerBlock;
-import net.minecraft.client.gui.components.AbstractButton;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.widget.button.AbstractButton;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 
-public class RecyclerScreen extends AbstractContainerScreen<RecyclerMenu> {
+public class RecyclerScreen extends ContainerScreen<RecyclerMenu> {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(Recycler.MOD_ID, "textures/gui/recycler.png");
 
 	private AbstractButton button;
 
-	public RecyclerScreen(RecyclerMenu menu, Inventory playerInv, Component title) {
+	public RecyclerScreen(RecyclerMenu menu, PlayerInventory playerInv, ITextComponent title) {
 		super(menu, playerInv, title);
 		imageWidth = 176;
 		imageHeight = 166;
@@ -26,27 +25,27 @@ public class RecyclerScreen extends AbstractContainerScreen<RecyclerMenu> {
 	@Override
 	protected void init() {
 		super.init();
-		addButton(button = new AbstractButton(leftPos + 7, topPos + 35, 162, 16, TextComponent.EMPTY) {
+		addButton(button = new AbstractButton(leftPos + 7, topPos + 35, 162, 16, ITextComponent.nullToEmpty("")) {
 			@Override
 			public void onPress() {
 				minecraft.gameMode.handleInventoryButtonClick(menu.containerId, 0);
 			}
 
 			@Override
-			public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float delta) {
+			public void renderButton(MatrixStack poseStack, int mouseX, int mouseY, float delta) {
 			}
 		});
 	}
 
 	@Override
-	public void render(PoseStack poseStack, int mouseX, int mouseY, float delta) {
+	public void render(MatrixStack poseStack, int mouseX, int mouseY, float delta) {
 		renderBackground(poseStack);
 		super.render(poseStack, mouseX, mouseY, delta);
 		renderTooltip(poseStack, mouseX, mouseY);
 	}
 
 	@Override
-	protected void renderBg(PoseStack poseStack, float delta, int mouseX, int mouseY) {
+	protected void renderBg(MatrixStack poseStack, float delta, int mouseX, int mouseY) {
 		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 		minecraft.getTextureManager().bind(TEXTURE);
 		blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
@@ -65,6 +64,6 @@ public class RecyclerScreen extends AbstractContainerScreen<RecyclerMenu> {
 			}
 		}
 
-		font.draw(poseStack, new TranslatableComponent(running ? "block.recycler.recycler.stop" : "block.recycler.recycler.start"), leftPos + 11, topPos + 39, button.isHovered() ? 0xFFFFFFFF : 0xFF373737);
+		font.draw(poseStack, new TranslationTextComponent(running ? "block.recycler.recycler.stop" : "block.recycler.recycler.start"), leftPos + 11, topPos + 39, button.isHovered() ? 0xFFFFFFFF : 0xFF373737);
 	}
 }

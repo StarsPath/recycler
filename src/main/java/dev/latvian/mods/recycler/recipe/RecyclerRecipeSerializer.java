@@ -2,18 +2,18 @@ package dev.latvian.mods.recycler.recipe;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 /**
  * @author LatvianModder
  */
-public class RecyclerRecipeSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<RecyclerRecipe> {
+public class RecyclerRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<RecyclerRecipe> {
 	@Override
 	public RecyclerRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
 		RecyclerRecipe r = new RecyclerRecipe(recipeId, json.has("group") ? json.get("group").getAsString() : "");
@@ -36,7 +36,7 @@ public class RecyclerRecipeSerializer extends ForgeRegistryEntry<RecipeSerialize
 	}
 
 	@Override
-	public RecyclerRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
+	public RecyclerRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
 		RecyclerRecipe r = new RecyclerRecipe(recipeId, buffer.readUtf(Short.MAX_VALUE));
 		r.time = buffer.readVarInt();
 		r.ingredient = Ingredient.fromNetwork(buffer);
@@ -51,7 +51,7 @@ public class RecyclerRecipeSerializer extends ForgeRegistryEntry<RecipeSerialize
 	}
 
 	@Override
-	public void toNetwork(FriendlyByteBuf buffer, RecyclerRecipe r) {
+	public void toNetwork(PacketBuffer buffer, RecyclerRecipe r) {
 		buffer.writeUtf(r.getGroup(), Short.MAX_VALUE);
 		buffer.writeVarInt(r.time);
 		r.ingredient.toNetwork(buffer);

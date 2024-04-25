@@ -11,9 +11,9 @@ import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 
 /**
  * @author LatvianModder
@@ -40,7 +40,7 @@ public class RecyclerJEIPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipes(IRecipeRegistration r) {
-		Level level = Minecraft.getInstance().level;
+		World level = Minecraft.getInstance().level;
 		r.addRecipes(level.getRecipeManager().getRecipesFor(RecyclerRecipeSerializers.RECYCLER_TYPE, NoInventory.INSTANCE, level), RecyclerCategory.UID);
 	}
 

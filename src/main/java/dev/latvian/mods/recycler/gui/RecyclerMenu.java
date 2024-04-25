@@ -1,19 +1,20 @@
 package dev.latvian.mods.recycler.gui;
 
+import dev.latvian.mods.recycler.Recycler;
 import dev.latvian.mods.recycler.block.RecyclerBlock;
 import dev.latvian.mods.recycler.block.entity.RecyclerEntity;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class RecyclerMenu extends AbstractContainerMenu {
+public class RecyclerMenu extends Container {
 	public final RecyclerEntity recycler;
 
-	public RecyclerMenu(int id, Inventory playerInv, RecyclerEntity r) {
+	public RecyclerMenu(int id, PlayerInventory playerInv, RecyclerEntity r) {
 		super(RecyclerMenus.RECYCLER.get(), id);
 		recycler = r;
 
@@ -36,12 +37,12 @@ public class RecyclerMenu extends AbstractContainerMenu {
 		}
 	}
 
-	public RecyclerMenu(int i, Inventory playerInv, FriendlyByteBuf buf) {
+	public RecyclerMenu(int i, PlayerInventory playerInv, PacketBuffer buf) {
 		this(i, playerInv, (RecyclerEntity) playerInv.player.level.getBlockEntity(buf.readBlockPos()));
 	}
 
 	@Override
-	public ItemStack quickMoveStack(Player player, int slotId) {
+	public ItemStack quickMoveStack(PlayerEntity player, int slotId) {
 		ItemStack lv = ItemStack.EMPTY;
 		Slot lv2 = slots.get(slotId);
 		if (lv2 != null && lv2.hasItem()) {
@@ -66,12 +67,12 @@ public class RecyclerMenu extends AbstractContainerMenu {
 	}
 
 	@Override
-	public boolean stillValid(Player arg) {
+	public boolean stillValid(PlayerEntity arg) {
 		return !recycler.isRemoved();
 	}
 
 	@Override
-	public boolean clickMenuButton(Player player, int button) {
+	public boolean clickMenuButton(PlayerEntity player, int button) {
 		if (button == 0) {
 			if (recycler.getBlockState().getValue(RecyclerBlock.RUNNING)) {
 				RecyclerBlock.stop(recycler.getBlockState(), player.level, recycler.getBlockPos());

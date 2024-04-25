@@ -2,12 +2,12 @@ package dev.latvian.mods.recycler.block.entity;
 
 import dev.latvian.mods.recycler.recipe.RecyclerRecipe;
 import dev.latvian.mods.recycler.recipe.RecyclerRecipeStore;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
 /**
  * @author LatvianModder
  */
-public class RecyclerEntity extends BlockEntity {
+public class RecyclerEntity extends TileEntity {
 	public boolean advanced;
 	public final ItemStackHandler input;
 	public final ItemStackHandler output;
@@ -60,7 +60,7 @@ public class RecyclerEntity extends BlockEntity {
 	}
 
 	@Override
-	public CompoundTag save(CompoundTag compound) {
+	public CompoundNBT save(CompoundNBT compound) {
 		compound.putBoolean("Advanced", advanced);
 		compound.put("Input", input.serializeNBT());
 		compound.put("Output", output.serializeNBT());
@@ -68,7 +68,7 @@ public class RecyclerEntity extends BlockEntity {
 	}
 
 	@Override
-	public void load(BlockState state, CompoundTag compound) {
+	public void load(BlockState state, CompoundNBT compound) {
 		super.load(state, compound);
 		advanced = compound.getBoolean("Advanced");
 		input.deserializeNBT(compound.getCompound("Input"));

@@ -1,34 +1,43 @@
 {
-	"variants": {
-		"facing=east,running=false": {
-			"model": "recycler:block/advanced_recycler",
-			"y": 90
+	"multipart": [
+		{
+			"when": {
+				"facing": "north",
+				"parent": "true"
+			},
+			"apply": {
+				"model": "recycler:block/advanced_recycler"
+			}
 		},
-		"facing=north,running=false": {
-			"model": "recycler:block/advanced_recycler"
+		{
+			"when": {
+				"facing": "south",
+				"parent": "true"
+			},
+			"apply": {
+				"model": "recycler:block/advanced_recycler",
+				"y": 180
+			}
 		},
-		"facing=south,running=false": {
-			"model": "recycler:block/advanced_recycler",
-			"y": 180
+		{
+			"when": {
+				"facing": "east",
+				"parent": "true"
+			},
+			"apply": {
+				"model": "recycler:block/advanced_recycler",
+				"y": 90
+			}
 		},
-		"facing=west,running=false": {
-			"model": "recycler:block/advanced_recycler",
-			"y": 270
-		},
-		"facing=east,running=true": {
-			"model": "recycler:block/advanced_recycler",
-			"y": 90
-		},
-		"facing=north,running=true": {
-			"model": "recycler:block/advanced_recycler"
-		},
-		"facing=south,running=true": {
-			"model": "recycler:block/advanced_recycler",
-			"y": 180
-		},
-		"facing=west,running=true": {
-			"model": "recycler:block/advanced_recycler",
-			"y": 270
+		{
+			"when": {
+				"facing": "west",
+				"parent": "true"
+			},
+			"apply": {
+				"model": "recycler:block/advanced_recycler",
+				"y": 270
+			}
 		}
-	}
+	]
 }

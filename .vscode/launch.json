@@ -1,0 +1,50 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Minecraft Client",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/run",
+      "console": "internalConsole",
+      "stopOnEntry": false,
+      "mainClass": "net.fabricmc.devlaunchinjector.Main",
+      "vmArgs": "-Dfabric.dli.config\u003dD:\\Users\\liuxi\\Minecraft@@0020Modding\\recycler-main\\.gradle\\loom-cache\\launch.cfg -Dfabric.dli.env\u003dclient -Dfabric.dli.main\u003dnet.minecraftforge.userdev.LaunchTesting",
+      "args": "",
+      "env": {
+        "MOD_CLASSES": "main_7ec8b1c%%D:\\Users\\liuxi\\Minecraft Modding\\recycler-main\\build\\resources\\main;main_7ec8b1c%%D:\\Users\\liuxi\\Minecraft Modding\\recycler-main\\build\\classes\\java\\main"
+      },
+      "projectName": ""
+    },
+    {
+      "type": "java",
+      "name": "Minecraft Data",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/run",
+      "console": "internalConsole",
+      "stopOnEntry": false,
+      "mainClass": "net.fabricmc.devlaunchinjector.Main",
+      "vmArgs": "-Dfabric.dli.config\u003dD:\\Users\\liuxi\\Minecraft@@0020Modding\\recycler-main\\.gradle\\loom-cache\\launch.cfg -Dfabric.dli.env\u003ddata -Dfabric.dli.main\u003dnet.minecraftforge.userdev.LaunchTesting",
+      "args": "",
+      "env": {
+        "MOD_CLASSES": "main_dee577a%%D:\\Users\\liuxi\\Minecraft Modding\\recycler-main\\build\\resources\\main;main_dee577a%%D:\\Users\\liuxi\\Minecraft Modding\\recycler-main\\build\\classes\\java\\main"
+      },
+      "projectName": ""
+    },
+    {
+      "type": "java",
+      "name": "Minecraft Server",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/run",
+      "console": "internalConsole",
+      "stopOnEntry": false,
+      "mainClass": "net.fabricmc.devlaunchinjector.Main",
+      "vmArgs": "-Dfabric.dli.config\u003dD:\\Users\\liuxi\\Minecraft@@0020Modding\\recycler-main\\.gradle\\loom-cache\\launch.cfg -Dfabric.dli.env\u003dserver -Dfabric.dli.main\u003dnet.minecraftforge.userdev.LaunchTesting",
+      "args": "nogui",
+      "env": {
+        "MOD_CLASSES": "main_528721c%%D:\\Users\\liuxi\\Minecraft Modding\\recycler-main\\build\\resources\\main;main_528721c%%D:\\Users\\liuxi\\Minecraft Modding\\recycler-main\\build\\classes\\java\\main"
+      },
+      "projectName": ""
+    }
+  ]
+}

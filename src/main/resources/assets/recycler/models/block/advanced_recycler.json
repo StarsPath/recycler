@@ -1,3 +1,22 @@
 {
-	"parent": "recycler:block/recycler"
+	"credit": "Made with Blockbench",
+	"texture_size": [64, 64],
+	"textures": {
+		"0": "recycler:block/texture",
+		"particle": "recycler:block/texture"
+	},
+	"elements": [
+		{
+			"from": [0, 0, -16],
+			"to": [16, 16, 16],
+			"faces": {
+				"north": {"uv": [4, 8, 8, 12], "texture": "#0"},
+				"east": {"uv": [0, 0, 8, 4], "texture": "#0"},
+				"south": {"uv": [8, 8, 12, 12], "texture": "#0"},
+				"west": {"uv": [0, 4, 8, 8], "texture": "#0"},
+				"up": {"uv": [4, 16, 0, 8], "texture": "#0"},
+				"down": {"uv": [12, 0, 8, 8], "texture": "#0"}
+			}
+		}
+	]
 }
